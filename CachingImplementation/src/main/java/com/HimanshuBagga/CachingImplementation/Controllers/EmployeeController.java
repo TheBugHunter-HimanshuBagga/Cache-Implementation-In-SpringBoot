@@ -5,11 +5,9 @@ import com.HimanshuBagga.CachingImplementation.services.EmployeeService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +30,12 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeDto>> getAllEmployee(){
         List<EmployeeDto> employeeDtos = employeeService.getAllEmployees();
         return ResponseEntity.ok(employeeDtos);
+    }
+
+    @PostMapping()
+    public ResponseEntity<EmployeeDto> createNewEmployee(@RequestBody EmployeeDto employeeDto){
+        EmployeeDto employeeDto1 = employeeService.createNewEmployee(employeeDto);
+        return new ResponseEntity<>(employeeDto1 , HttpStatus.CREATED);
     }
 
 
