@@ -10,6 +10,9 @@ import lombok.extern.slf4j.XSlf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 @XSlf4j
@@ -27,6 +30,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
         return modelMapper.map(employee , EmployeeDto.class);
     }
+
+    @Override
+    public List<EmployeeDto> getAllEmployees(){
+        List<EmployeeDto> employee = employeeRepository.findAll()
+                .stream()
+                .map(employee1 -> modelMapper.map(employee1 , EmployeeDto.class))
+                .collect(Collectors.toList());
+
+        return employee;
+    }
+
+
 
 
 }
