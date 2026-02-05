@@ -20,7 +20,7 @@ public class EmployeeDto {
 
     private String role;
 
-    private Double Salary;
+    private Double salary;
 
     private LocalDate dateOfJoining;
 
