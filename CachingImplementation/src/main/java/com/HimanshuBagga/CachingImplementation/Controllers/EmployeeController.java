@@ -26,18 +26,25 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeDto);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<EmployeeDto>> getAllEmployee(){
         List<EmployeeDto> employeeDtos = employeeService.getAllEmployees();
         return ResponseEntity.ok(employeeDtos);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<EmployeeDto> createNewEmployee(@RequestBody EmployeeDto employeeDto){
         EmployeeDto employeeDto1 = employeeService.createNewEmployee(employeeDto);
         return new ResponseEntity<>(employeeDto1 , HttpStatus.CREATED);
     }
 
-
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<EmployeeDto> updateEmployeeById(@PathVariable Long employeeId,
+                                                          @RequestBody EmployeeDto employeeDto
+                                                          )
+    {
+        EmployeeDto employeeDto1 = employeeService.updateEmployeeById(employeeId , employeeDto);
+        return ResponseEntity.ok(employeeDto);
+    }
 
 }
