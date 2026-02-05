@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/Employee/v1")
@@ -25,5 +27,13 @@ public class EmployeeController {
         EmployeeDto employeeDto = employeeService.getEmployeebyId(employeeId);
         return ResponseEntity.ok(employeeDto);
     }
+
+    @GetMapping()
+    public ResponseEntity<List<EmployeeDto>> getAllEmployee(){
+        List<EmployeeDto> employeeDtos = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employeeDtos);
+    }
+
+
 
 }
