@@ -7,10 +7,14 @@ import com.HimanshuBagga.CachingImplementation.repositories.EmployeeRepository;
 import com.HimanshuBagga.CachingImplementation.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.XSlf4j;
+import org.apache.el.util.ReflectionUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -80,4 +84,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.deleteById(employeeId);
     }
 
+    @Override
+    public EmployeeDto updatePartialEmployee(Long employeeId , Map<String , Object> updates){
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+                () -> {
+                    throw new ResourceNotFoundException("Employee not found with Id: " + employeeId);
+                }
+        );
+        updates.forEach((fieldName , value) -> {
+            Field field = ReflectionUtils.findField(Employee.class, fieldName);
+            if(field != null){
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, employee, value);
+            }
+        });
+        Employee updatedEmployee = employeeRepository.save(employee);
+        return modelMapper.map(updatedEmployee , EmployeeDto.class);
+    }
 }
