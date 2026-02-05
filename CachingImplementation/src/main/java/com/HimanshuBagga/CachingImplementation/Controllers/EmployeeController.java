@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,4 +55,9 @@ public class EmployeeController {
         return ResponseEntity.notFound().build();
     }
 
+    @PatchMapping("/{employeeId}")
+    public ResponseEntity<EmployeeDto> updatePartialEmployee(@PathVariable Long employeeId , @RequestBody Map<String , Object> updates){
+        EmployeeDto employeeDto = employeeService.updatePartialEmployee(employeeId , updates);
+        return ResponseEntity.ok(employeeDto);
+    }
 }
