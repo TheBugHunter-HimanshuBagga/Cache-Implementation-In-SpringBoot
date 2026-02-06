@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.XSlf4j;
 import org.apache.el.util.ReflectionUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -26,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Cacheable(value = "employees" , key = "#id")
     public EmployeeDto getEmployeebyId(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> {
