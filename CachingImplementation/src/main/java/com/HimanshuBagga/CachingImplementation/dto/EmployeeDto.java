@@ -2,6 +2,7 @@ package com.HimanshuBagga.CachingImplementation.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class EmployeeDto {
+public class EmployeeDto implements Serializable {
     private Long id;
 
     private String name;
