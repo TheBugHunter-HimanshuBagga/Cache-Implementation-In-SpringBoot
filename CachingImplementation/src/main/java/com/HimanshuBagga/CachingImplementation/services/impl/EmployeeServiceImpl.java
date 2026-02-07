@@ -6,9 +6,11 @@ import com.HimanshuBagga.CachingImplementation.exceptions.ResourceNotFoundExcept
 import com.HimanshuBagga.CachingImplementation.repositories.EmployeeRepository;
 import com.HimanshuBagga.CachingImplementation.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.extern.slf4j.XSlf4j;
 import org.apache.el.util.ReflectionUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -20,14 +22,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@XSlf4j
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    @Cacheable(value = "employees" , key = "#id")
+    @Cacheable(cacheNames = "employees" , key = "#employeeId")
     public EmployeeDto getEmployeebyId(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> {
@@ -48,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @CachePut(cacheNames = "employees" , key = "#result.id") // get the result and update the result
     public EmployeeDto createNewEmployee(EmployeeDto employeeDto){
         List<Employee> employee = employeeRepository.findByEmail(employeeDto.getEmail());
         if(!employee.isEmpty()){
@@ -59,18 +62,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @CachePut(cacheNames = "employees" , key = "#employeeId")
     public EmployeeDto updateEmployeeById(Long employeeId , EmployeeDto employeeDto){
         // check exists , if not create and save
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
-                () -> {
-                    throw new ResourceNotFoundException("Employee not found with Id: " + employeeId);
-                }
-        );
-        if(!employee.getEmail().equals(employeeDto.getEmail())){
-            throw new RuntimeException("The Employee with this Email Id is not found: " + employeeDto.getEmail());
-        }
-        employeeDto.setId(null);
-        modelMapper.map(employeeDto , Employee.class);
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employee not found with Id: " + employeeId));
+        modelMapper.map(employeeDto , employee);
+        employee.setId(employeeId);
 
         Employee updatedEmployee = employeeRepository.save(employee);
         return modelMapper.map(updatedEmployee , EmployeeDto.class);
