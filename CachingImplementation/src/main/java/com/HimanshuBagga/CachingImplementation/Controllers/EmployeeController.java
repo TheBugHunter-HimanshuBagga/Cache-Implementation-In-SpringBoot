@@ -52,7 +52,7 @@ public class EmployeeController {
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<EmployeeDto> deleteEmployeeById(@PathVariable Long employeeId){
         employeeService.deleteEmployeeById(employeeId);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{employeeId}")
