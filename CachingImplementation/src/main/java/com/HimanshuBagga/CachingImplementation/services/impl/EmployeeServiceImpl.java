@@ -41,6 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+
     public List<EmployeeDto> getAllEmployees(){
         List<EmployeeDto> employee = employeeRepository.findAll()
                 .stream()
@@ -51,6 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     @CachePut(cacheNames = "employees" , key = "#result.id") // get the result and update the result
     public EmployeeDto createNewEmployee(EmployeeDto employeeDto){
         List<Employee> employee = employeeRepository.findByEmail(employeeDto.getEmail());
